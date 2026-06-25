@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from src.database.config import get_db
 from src.database.repositorio import ReservasRepositorio
 from pydantic import BaseModel
+from src.database.config import crear_tablas
 
 app = FastAPI()
 
@@ -28,3 +29,7 @@ def obtener_resumen(evento_id: str, db: Session = Depends(get_db)):
     repo = ReservasRepositorio(db)
     total_recaudado = repo.calcular_total_evento(evento_id)
     return {"evento_id": evento_id, "total_recaudado": total_recaudado}
+
+@app.on_event("startup")
+def startup():
+    crear_tablas()
